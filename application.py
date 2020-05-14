@@ -24,13 +24,16 @@ def sign_up_render():
 def sign_up():
     username = request.form.get("username")
     password = request.form.get("password")
-    c-password = request.form.get("c-password")
+    c_password = request.form.get("c_password")
 
-    if db.execute("SELECT * FROM accounts WHERE username = :username").rowcount == 0 and password == c-password:
-        db.execute("INSERT INTO accounts (username, password) VALUES (:username, :password)")
-        return render_template("welcome.html", username="username") 
+    available_username = db.execute("SELECT * FROM accounts WHERE username = :username", {"username": username}).rowcount == 0
+    taken_username = db.execute("SELECT * FROM accounts WHERE username = :username", {"username": username}).rowcount == 1
 
-    elif db.execute("SELECT * FROM accounts WHERE username = :username").rowcount == 1:
+    if available_username and password == c_password:
+        add_account()
+        return render_template("welcome.html", username="username")
+
+    elif taken_username:
         return render_template("sign_up.html", message="username is already taken")
 
     else:
@@ -47,11 +50,16 @@ def log_in():
     username = request.form.get("username")
     password = request.form.get("password")
 
-    if db.execute("SELECT * FROM accounts WHERE username = :username, password = :password"):
+    correct_username_password = db.execute("SELECT * FROM accounts WHERE username = :username, password = :password", {"username": username, "password": password})
+    incorrect_password = db.execute("SELECT * FROM accounts WHERE username = :username, password != :password", {"username": username, "password": password})
+    if correct_username_password :
         return render_template("welcome.html", username="username")
 
-    elif db.execute("SELECT * FROM accounts WHERE username = :username, password =! :password"):
+    elif incorrect_password :
         return render_template("log_in.html", message="password incorect")
-
     else:
         return render_template("log_in.html", message="username not found")
+
+
+if __name__ == '__main__':
+    app.run()
