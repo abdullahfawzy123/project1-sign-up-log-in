@@ -1,0 +1,19 @@
+<html>
+<head><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<a href="home_page.htnl">log out</a>
+<br>
+
+{ block Hello }
+<h1>Hello, {{username}}</h1>
+{ end block }
+<br><br><br>
+<div>
+    <form action="{{url_for('search')}}" method="post"> <input name="result" type="text" placeholder="book name, ISBN, Author"><button name="Search"class="btn btn-info">Search</button></form>
+    </div>
+    { block message }
+    <h5>{{message}}</h5>
+    { endblock }
+</body>
+</html>
